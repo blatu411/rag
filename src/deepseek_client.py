@@ -1,6 +1,7 @@
 """
 DeepSeek API 客户端模块
 """
+import os
 from typing import Iterator, List, Dict, Any
 from openai import OpenAI
 from loguru import logger
@@ -29,7 +30,22 @@ class DeepSeekClient:
                 "Please set DEEPSEEK_API_KEY in .env file"
             )
 
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        # 配置代理（如果有环境变量）
+        http_proxy = os.getenv("HTTP_PROXY") or os.getenv("http_proxy")
+        https_proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+
+        client_kwargs = {
+            "api_key": self.api_key,
+            "base_url": self.base_url,
+            "timeout": 30.0,
+        }
+
+        # 如果配置了代理，添加到客户端
+        if http_proxy or https_proxy:
+            client_kwargs["http_client"] = None  # 让 OpenAI 自动使用环境变量中的代理
+            logger.info(f"使用代理: HTTP={http_proxy}, HTTPS={https_proxy}")
+
+        self.client = OpenAI(**client_kwargs)
         logger.info(f"DeepSeek client initialized with model: {self.model}")
 
     def chat(
