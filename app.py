@@ -220,12 +220,12 @@ def upload_documents_to_knowledge_base(uploaded_files):
             # 处理文档
             chunks, metadata = st.session_state.document_processor.process_file(str(temp_path))
 
-            # 添加源文件名到元数据
-            for m in metadata:
-                m["filename"] = uploaded_file.name
+            # 添加文件名到元数据
+            metadata["filename"] = uploaded_file.name
 
+            # 为每个分块创建元数据副本
             all_chunks.extend(chunks)
-            all_metadata.extend([{**m, "chunk_index": i} for i, _ in enumerate(chunks)])
+            all_metadata.extend([{**metadata, "chunk_index": i} for i in range(len(chunks))])
 
             # 删除临时文件
             os.remove(temp_path)
