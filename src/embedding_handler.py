@@ -49,7 +49,7 @@ class BGEEmbeddingHandler:
 
         try:
             logger.debug(f"Embedding {len(texts)} texts")
-            embeddings = self.model.encode(texts, normalize_embeddings=True)
+            embeddings = self.model.encode(texts)
             logger.debug(f"Embedding completed, shape: {embeddings.shape}")
             return embeddings
         except Exception as e:
@@ -74,9 +74,9 @@ class BGEEmbeddingHandler:
 
         try:
             logger.debug(f"Embedding query: {query[:50]}...")
-            embeddings = self.model.encode_queries(query, normalize_embeddings=True)
+            embeddings = self.model.encode_queries([query])
             logger.debug(f"Query embedding completed, shape: {embeddings.shape}")
-            return embeddings
+            return embeddings[0] if len(embeddings) > 0 else np.array([])
         except Exception as e:
             logger.error(f"Error embedding query: {str(e)}")
             raise
