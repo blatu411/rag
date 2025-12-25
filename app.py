@@ -223,8 +223,6 @@ def upload_documents_to_knowledge_base(uploaded_files):
             # 添加源文件名到元数据
             for m in metadata:
                 m["filename"] = uploaded_file.name
-            for m in metadata:
-                m.update(metadata)
 
             all_chunks.extend(chunks)
             all_metadata.extend([{**m, "chunk_index": i} for i, _ in enumerate(chunks)])
